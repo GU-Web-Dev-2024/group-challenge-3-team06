@@ -96,62 +96,43 @@
     </div>
 
     <script>
-        // Set up local variables
-        // Hint: Declare variables for score, currentHole, gameTimer, timeLeft, moleVisible, etc.
+        // Initialize score and get the necessary DOM elements
+        let score = 0;
+        const scoreBoard = document.getElementById('score-board');
+        const holes = document.querySelectorAll('.hole');
+        let mole = null; // Placeholder for the mole in the current hole
 
-        // Get references to DOM elements
-        // Example:
-        // const startButton = document.getElementById('startButton');
+        // Function to display a mole in a random hole
+        function displayMole() {
+            // Remove mole from the previous hole, if any
+            if (mole) {
+                mole.style.display = 'none';
+                mole.removeEventListener('click', whackMole);
+            }
 
-        // Add event listener to the start button        
+            // Select a random hole and display the mole
+            const randomHole = holes[Math.floor(Math.random() * holes.length)];
+            mole = randomHole.querySelector('.mole');
+            mole.style.display = 'block';
 
-        // TODO: start game logic
-        function startGame() {
-            // Algorithm:
-            // 1. Reset game variables: score starts at 0, timer starts at max, mole visibility, etc.          
-            // 2. Update JS variables and HTML elements to reflect this.            
-            // 3. Start the mole movement interval using setInterval().
-            //    e.g., - gameTimer = setInterval(randomHole, 1000); // Move mole every second
-            // 4. Start the countdown timer using setInterval().            
+            // Add event listener to detect mole click
+            mole.addEventListener('click', whackMole);
         }
 
-        // TODO: mole movement logic
-        function randomHole() {
-            // Algorithm:
-            // 1. Hide the mole in the previous hole (if any).           
-            // 2. Generate a random index to select a new hole. 
-            //      hint: you need to then find all "mole holes" and randomly choose one from the list.           
-            // 3. Show the mole in the new hole.            
-            // 4. Add a click event listener to the mole to handle "whacking".            
+        // Function to handle mole being clicked (whacked)
+        function whackMole() {
+            // Increase the score
+            score++;
+            scoreBoard.textContent = `Score: ${score}`;
+
+            // Hide the mole after it's clicked
+            mole.style.display = 'none';
         }
 
-        // TODO: whack mole game logic
-        function whack() {
-            // Algorithm:
-            // 0. if the mole is visible...
-            // 1. Increase the score.           
-            // 2. Update the score display in the HTML.           
-            // 3. Hide the mole after it's whacked.            
-        }
-
-        // TODO: end game logic function
-        function endGame() {
-            // Algorithm:
-            // 1. Stop the mole movement and countdown timers using clearInterval().            
-            // 2. Hide any remaining mole on the grid.            /
-            // 3. Display an alert or message showing the final score.            
-            // 4. Reset the game to allow playing again.
-        }
-
-        // Helpful Tips:
-        // - Use setInterval() to create "loops" for mole movement and countdown timer.
-        // - Use Math.random() and Math.floor() to select a random hole.
-        // - Use querySelectorAll() to get all hole elements and store them in a variable.
-        // - Manipulate the DOM to show and hide moles using style.display or classList methods.
-        // - Remember to remove event listeners if necessary to prevent multiple bindings.
-        // - Remember to clear intervals if you are done with them!
-        // - Keep track of the game's state using variables (e.g., is the mole visible?).
-        // - Test each function individually to ensure it works before moving on.
+        // Start the game and display a mole initially
+        document.getElementById('startButton').addEventListener('click', function () {
+            displayMole();
+        });
     </script>
 </body>
 
