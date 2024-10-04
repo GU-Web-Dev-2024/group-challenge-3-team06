@@ -70,7 +70,7 @@
     <h1>Whack-a-Mole Game</h1>
     <!-- Score and Timer displays -->
     <div id="score-board">Score: 0</div>
-    <div id="timer">Time Left: 30s</div>
+    <div id="timer">Time Left: </div>
     <!-- Start Game button -->
     <button id="startButton">Start Game</button>
     <!-- Game grid containing holes and moles -->
@@ -102,6 +102,26 @@
         const holes = document.querySelectorAll('.hole');
         let mole = null; // Placeholder for the mole in the current hole
 
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            setInterval(function () {
+                seconds = parseInt(timer % 60, 10);
+
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = "Time left: " + seconds + "s";
+
+                if (--timer < 0) {
+                    timer = duration;
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            var thirtyseconds = 30,
+                display = document.querySelector('#timer');
+            startTimer(thirtyseconds, display);
+        };
         // Function to display a mole in a random hole
         function displayMole() {
             // Remove mole from the previous hole, if any
