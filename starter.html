@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <!-- Meta tags for character encoding and responsive design -->
     <meta charset="UTF-8">
@@ -37,17 +36,15 @@
             position: absolute;
             top: 25px;
             left: 25px;
-            display: none;
-            /* Hide the mole by default */
+            display: none; /* Hide the mole by default */
         }
 
         .mole:hover {
             cursor: pointer;
-            border: 5px solid yellow;
-            /* Highlight the mole on hover */
+            border: 5px solid yellow; /* Highlight the mole on hover */
         }
 
-        #startButton {
+        #startButton, #moveMoleButton {
             margin: 20px;
             padding: 10px 20px;
             font-size: 16px;
@@ -65,14 +62,15 @@
         }
     </style>
 </head>
-
 <body>
     <h1>Whack-a-Mole Game</h1>
     <!-- Score and Timer displays -->
     <div id="score-board">Score: 0</div>
-    <div id="timer">Time Left: </div>
+    <div id="timer">Time Left: 30s</div>
     <!-- Start Game button -->
     <button id="startButton">Start Game</button>
+    <!-- Temporary button to manually move the mole -->
+    <button id="moveMoleButton" style="display:none;">Move Mole</button>
     <!-- Game grid containing holes and moles -->
     <div class="grid">
         <div class="hole" id="hole1">
@@ -98,30 +96,15 @@
     <script>
         // Initialize score and get the necessary DOM elements
         let score = 0;
+        let timeLeft = 30;
         const scoreBoard = document.getElementById('score-board');
+        const timerDisplay = document.getElementById('timer');
+        const startButton = document.getElementById('startButton');
+        const moveMoleButton = document.getElementById('moveMoleButton');
         const holes = document.querySelectorAll('.hole');
         let mole = null; // Placeholder for the mole in the current hole
+        let gameInterval, moleInterval, timerInterval;
 
-        function startTimer(duration, display) {
-            var timer = duration, minutes, seconds;
-            setInterval(function () {
-                seconds = parseInt(timer % 60, 10);
-
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                display.textContent = "Time left: " + seconds + "s";
-
-                if (--timer < 0) {
-                    timer = duration;
-                }
-            }, 1000);
-        }
-
-        window.onload = function () {
-            var thirtyseconds = 30,
-                display = document.querySelector('#timer');
-            startTimer(thirtyseconds, display);
-        };
         // Function to display a mole in a random hole
         function displayMole() {
             // Remove mole from the previous hole, if any
@@ -141,19 +124,46 @@
 
         // Function to handle mole being clicked (whacked)
         function whackMole() {
-            // Increase the score
             score++;
             scoreBoard.textContent = `Score: ${score}`;
-
-            // Hide the mole after it's clicked
-            mole.style.display = 'none';
+            mole.style.display = 'none'; // Hide the mole after it's clicked
         }
 
+        // Function to manually move the mole to a random hole
+        moveMoleButton.addEventListener('click', displayMole);
+
         // Start the game and display a mole initially
-        document.getElementById('startButton').addEventListener('click', function () {
-            setInterval(displayMole, 1000);
+        startButton.addEventListener('click', function () {
+            score = 0;
+            scoreBoard.textContent = `Score: ${score}`;
+            timeLeft = 30;
+            timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+
+            displayMole();
+            moveMoleButton.style.display = 'block'; // Show the manual move button
+            startButton.disabled = true;
+
+            moleInterval = setInterval(displayMole, 1000); // Move mole every second
+
+            // Timer countdown
+            timerInterval = setInterval(function () {
+                timeLeft--;
+                timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+
+                if (timeLeft <= 0) {
+                    endGame();
+                }
+            }, 1000);
         });
+
+        // End the game and stop the intervals
+        function endGame() {
+            clearInterval(moleInterval);
+            clearInterval(timerInterval);
+            moveMoleButton.style.display = 'none'; // Hide the manual move button
+            startButton.disabled = false;
+            alert(`Game Over! Your final score is ${score}.`);
+        }
     </script>
 </body>
-
 </html>
